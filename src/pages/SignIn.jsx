@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg';
 import visibilityIcon from '../assets/svg/visibilityIcon.svg';
 
@@ -21,6 +23,26 @@ function SingIn() {
     }));
   };
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const auth = getAuth();
+
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      if (userCredential.user) {
+        navigate('/');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <div className='pageContainer'>
@@ -28,50 +50,48 @@ function SingIn() {
           <p className='pageHeader'>Welcome Back!</p>
         </header>
 
-        <main>
-          <form>
+        <form onSubmit={onSubmit}>
+          <input
+            type='email'
+            className='emailInput'
+            placeholder='Email'
+            id='email'
+            value={email}
+            onChange={onChange}
+          />
+
+          <div className='passwordInputDiv'>
             <input
-              type='email'
-              className='emailInput'
-              placeholder='Email'
-              id='email'
-              value={email}
+              type={showPassword ? 'text' : 'password'}
+              className='passwordInput'
+              placeholder='Password'
+              id='password'
+              value={password}
               onChange={onChange}
             />
-
-            <div className='passwordInputDiv'>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                className='passwordInput'
-                placeholder='Password'
-                id='password'
-                value={password}
-                onChange={onChange}
-              />
-              <img
-                src={visibilityIcon}
-                alt='show password'
-                className='showPassword'
-                onClick={() => setshowPassword((prevState) => !prevState)}
-              />
-            </div>
-            <Link to='/forgot-password' className='forgotPasswordLink'>
-              Forgot Password
-            </Link>
-
-            <div className='signInBar'>
-              <p className='signInText'>Sign In</p>
-              <button className='signInButton'>
-                <ArrowRightIcon fill='#ffffff' width='34px' height='34px' />
-              </button>
-            </div>
-          </form>
-
-          {/* Google OAuth Component */}
-          <Link to='/sign-up' className='registerLink'>
-            Sign Up Instead
+            <img
+              src={visibilityIcon}
+              alt='show password'
+              className='showPassword'
+              onClick={() => setshowPassword((prevState) => !prevState)}
+            />
+          </div>
+          <Link to='/forgot-password' className='forgotPasswordLink'>
+            Forgot Password
           </Link>
-        </main>
+
+          <div className='signInBar'>
+            <p className='signInText'>Sign In</p>
+            <button className='signInButton'>
+              <ArrowRightIcon fill='#ffffff' width='34px' height='34px' />
+            </button>
+          </div>
+        </form>
+
+        {/* Google OAuth Component */}
+        <Link to='/sign-up' className='registerLink'>
+          Sign Up Instead
+        </Link>
       </div>
     </>
   );
