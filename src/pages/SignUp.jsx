@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   getAuth,
@@ -10,6 +11,7 @@ import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg';
 import visibilityIcon from '../assets/svg/visibilityIcon.svg';
+import OAuth from '../components/OAuth';
 
 function SingUp() {
   const [showPassword, setshowPassword] = useState(false);
@@ -56,7 +58,7 @@ function SingUp() {
 
       navigate('/');
     } catch (err) {
-      console.log(err);
+      toast.error('Something went wrong with registration');
     }
   };
 
@@ -114,8 +116,7 @@ function SingUp() {
           </div>
         </form>
 
-        {/* Google OAuth Component */}
-        {/* Google OAuth Component */}
+        <OAuth />
         <Link to='/sign-in' className='registerLink'>
           Sign In Instead
         </Link>
