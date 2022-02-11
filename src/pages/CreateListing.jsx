@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../components/Spinner';
+import { toast } from 'react-toastify';
 
 function CreateListing() {
   const [geoLocationEnable, setGeoLocationEnable] = useState(true);
@@ -64,9 +65,45 @@ function CreateListing() {
 
   const onSubmit = (e) => {
     e.preventDefault();
+
+    setLoading(true);
+
+    if (discountedPrice >= regularPrice) {
+      setLoading(false);
+      toast.error('Discounted price must be less than regular price.');
+      return;
+    }
+    if (images.legnth > 6) {
+      setLoading(false);
+      toast.error('Max 6 images');
+      return;
+    }
   };
 
-  const onMutate = (e) => {};
+  const onMutate = (e) => {
+    let boolean = null;
+    if (e.target.value === 'true') {
+      boolean = true;
+    }
+    if (e.target.value === 'false') {
+      boolean = false;
+    }
+    //files
+    if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        images: e.target.files,
+      }));
+    }
+
+    //text/boolean/numbers
+    if (!e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: boolean ?? e.target.value,
+      }));
+    }
+  };
 
   return (
     <div className='profile'>
@@ -269,16 +306,19 @@ function CreateListing() {
           {offer && (
             <>
               <label className='formLabel'>Discounted Price</label>
-              <input
-                className='formInputSmall'
-                type='number'
-                id='discountedPrice'
-                value={discountedPrice}
-                onChange={onMutate}
-                min='50'
-                max='750000000'
-                required={offer}
-              />
+              <div className='formPriceDiv'>
+                <input
+                  className='formInputSmall'
+                  type='number'
+                  id='discountedPrice'
+                  value={discountedPrice}
+                  onChange={onMutate}
+                  min='50'
+                  max='750000000'
+                  required={offer}
+                />
+                <p className='formPriceText'>$ / Month</p>
+              </div>
             </>
           )}
 
