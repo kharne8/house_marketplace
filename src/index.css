@@ -792,6 +792,7 @@ button {
 .formInputFile {
   width: 100%;
 }
+
 .formInputFile::-webkit-file-upload-button {
   background-color: #00cc66;
   border: none;
@@ -802,8 +803,18 @@ button {
   margin-right: 1rem;
 }
 
+.formInputFile::-webkit-file-upload-button:active {
+  background-color: #009148;
+  transform: scale(0.95);
+}
+
 .createListingButton {
   margin-top: 5rem;
+}
+
+.createListingButton:active {
+  background-color: #009148;
+  transform: scale(0.95);
 }
 
 .offers {

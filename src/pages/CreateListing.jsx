@@ -18,7 +18,7 @@ function CreateListing() {
     offer: false,
     regularPrice: 0,
     discountedPrice: 0,
-    images: {},
+    images: { 1: 'a', 2: 'b', 3: 'c' },
     latitude: 0,
     longitude: 0,
   });
@@ -63,7 +63,7 @@ function CreateListing() {
     return <Spinner />;
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     setLoading(true);
@@ -73,11 +73,40 @@ function CreateListing() {
       toast.error('Discounted price must be less than regular price.');
       return;
     }
-    if (images.legnth > 6) {
+    if (Object.keys(images).length > 6) {
       setLoading(false);
-      toast.error('Max 6 images');
+      toast.error('6 images max');
       return;
     }
+
+    const geoLocation = {};
+    let location = null;
+
+    if (geoLocationEnable) {
+      const res = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+      );
+
+      const data = await res.json();
+
+      geoLocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+      geoLocation.lng = data.results[0]?.geometry.location.llng ?? 0;
+
+      location =
+        data.status === 'ZERO_RESULTS'
+          ? undefined
+          : data.results[0]?.formatted_address;
+
+      if (location === undefined || location.includes('undefined')) {
+        setLoading(false);
+        toast.error('Please enter a correct address.');
+      }
+    } else {
+      geoLocation.lat = latitude;
+      geoLocation.lng = longitude;
+      location = address;
+    }
+    setLoading(false);
   };
 
   const onMutate = (e) => {
