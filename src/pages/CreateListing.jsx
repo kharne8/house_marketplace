@@ -156,15 +156,14 @@ function CreateListing() {
       });
     };
 
-    try {
-      const imgUrls = await Promise.all(
-        [...images].map((image) => storeImage(image))
-      );
-    } catch (error) {
+    const imageUrls = await Promise.all(
+      [...images].map((image) => storeImage(image))
+    ).catch((error) => {
+      console.log(error);
       setLoading(false);
       toast.error('Images not uploaded');
       return;
-    }
+    });
 
     setLoading(false);
   };
