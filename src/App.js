@@ -14,7 +14,7 @@ import CreateListing from './pages/CreateListing';
 
 function App() {
   return (
-    <>
+    <div className='app'>
       <Router>
         <Routes>
           <Route path='/' element={<Explore />} />
@@ -32,7 +32,7 @@ function App() {
       </Router>
 
       <ToastContainer />
-    </>
+    </div>
   );
 }
 
