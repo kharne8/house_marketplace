@@ -27,7 +27,7 @@ button {
 
 /* for eye relieve during night coding */
 .app {
-  background-color: #313132;
+  /* background-color: #313132; */
 }
 
 .input,
@@ -150,9 +150,9 @@ button {
   bottom: 0;
   right: 0;
   height: 85px;
-  /* background-color: #ffffff; */
+  background-color: #ffffff;
   /* for eye relief during night coding */
-  background-color: #313132;
+  /* background-color: #313132; */
   z-index: 1000;
   display: flex;
   justify-content: center;
