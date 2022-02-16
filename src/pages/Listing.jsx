@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper-bundle.min.css';
+import 'swiper/swiper.min.css';
 import { getDoc, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { db } from '../firebase.config';
 import Spinner from '../components/Spinner';
 import shareIcon from '../assets/svg/shareIcon.svg';
+SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 
 function Listing() {
   const [listing, setListing] = useState(null);
@@ -17,7 +23,7 @@ function Listing() {
 
   useEffect(() => {
     const fetchListing = async () => {
-      const docRef = doc(db, 'listings', params.listingID);
+      const docRef = doc(db, 'listings', params.listingId);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -27,15 +33,31 @@ function Listing() {
     };
 
     fetchListing();
-  }, [navigate, params.listingID]);
+  }, [navigate, params.listingId]);
 
   if (loading) {
     return <Spinner />;
   }
 
+  const background =
+    'https://907015.smushcdn.com/2188340/wp-content/uploads/1.-exterior-2-1030x664-1.jpg?lossy=1&strip=1&webp=1';
   return (
     <main>
-      {/* slider */}
+      <Swiper slidesPerView={1} pagination={{ clickable: true }}>
+        {listing.imageUrls.map((url, index) => (
+          <SwiperSlide key={index}>
+            <div
+              className='swiperSlideDiv'
+              style={{
+                background: `url(${listing.imageUrls[index]})`,
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSizecover: 'cover',
+              }}
+            ></div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
 
       <div
         className='shareIconDiv'
@@ -87,11 +109,28 @@ function Listing() {
           <li>{listing.furnished && 'Furnished'}</li>
         </ul>
         <p className='listingLocationTitle'>Location</p>
-        {/* map */}
+        <div className='leafletContainer'>
+          <MapContainer
+            style={{ height: '100%', width: '100%' }}
+            center={[listing.geoLocation.lat, listing.geoLocation.lng]}
+            zoom={13}
+            scrollWheelZoom={false}
+          >
+            <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url='https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png'
+            />
+            <Marker
+              position={[listing.geoLocation.lat, listing.geoLocation.lng]}
+            >
+              <Popup>{listing.location}</Popup>
+            </Marker>
+          </MapContainer>
+        </div>
 
         {auth.currentUser?.uid !== listing.userRef && (
           <Link
-            to={`/contact/${listing.userRef}?listingName=${listing.name}&listingLocation=${listing.location}`}
+            to={`/contact/${listing.userRef}?listingName=${listing.name}`}
             className='primaryButton'
           >
             Contact Landlord
