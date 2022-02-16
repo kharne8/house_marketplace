@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 function CreateListing() {
   //eslint-disable-next-line
-  const [geoLocationEnable, setGeoLocationEnable] = useState(true);
+  const [geolocationEnable, setGeolocationEnable] = useState(true);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: 'rent',
@@ -89,18 +89,18 @@ function CreateListing() {
       return;
     }
 
-    const geoLocation = {};
+    const geolocation = {};
     let location = null;
 
-    if (geoLocationEnable) {
+    if (geolocationEnable) {
       const res = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
       );
 
       const data = await res.json();
 
-      geoLocation.lat = data.results[0]?.geometry.location.lat ?? 0;
-      geoLocation.lng = data.results[0]?.geometry.location.llng ?? 0;
+      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
+      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
 
       location =
         data.status === 'ZERO_RESULTS'
@@ -112,8 +112,8 @@ function CreateListing() {
         toast.error('Please enter a correct address.');
       }
     } else {
-      geoLocation.lat = latitude;
-      geoLocation.lng = longitude;
+      geolocation.lat = latitude;
+      geolocation.lng = longitude;
     }
 
     //store images on firebase
@@ -169,7 +169,7 @@ function CreateListing() {
     const formDataCopy = {
       ...formData,
       imageUrls,
-      geoLocation,
+      geolocation,
       timestamp: serverTimestamp(),
     };
 
@@ -247,7 +247,7 @@ function CreateListing() {
             id='name'
             value={name}
             onChange={onMutate}
-            maxLength='32'
+            maxLength='40'
             minLength='10'
             required
           />
@@ -343,7 +343,7 @@ function CreateListing() {
             required
           />
 
-          {!geoLocationEnable && (
+          {!geolocationEnable && (
             <div className='formLatLng flex'>
               <div>
                 <label className='formLabel'>Latitude</label>
