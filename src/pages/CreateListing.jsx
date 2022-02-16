@@ -14,6 +14,7 @@ import { db } from '../firebase.config';
 import { v4 as uuidv4 } from 'uuid';
 
 function CreateListing() {
+  //eslint-disable-next-line
   const [geoLocationEnable, setGeoLocationEnable] = useState(true);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({

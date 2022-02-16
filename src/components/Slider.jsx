@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -40,6 +40,10 @@ function Slider() {
 
   if (loading) {
     return <Spinner />;
+  }
+
+  if (listings.length === 0) {
+    return <></>;
   }
 
   return (
