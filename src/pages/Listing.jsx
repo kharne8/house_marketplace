@@ -50,7 +50,7 @@ function Listing() {
                 background: `url(${listing.imageUrls[index]})`,
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
-                backgroundSizecover: 'cover',
+                backgroundSize: 'fit',
               }}
             ></div>
           </SwiperSlide>
@@ -88,7 +88,7 @@ function Listing() {
         </p>
         {listing.offer && (
           <p className='discountPrice'>
-            ${listing.regularPrice - listing.discountedPrice} discount
+            $ {listing.regularPrice - listing.discountedPrice} discount
           </p>
         )}
 
